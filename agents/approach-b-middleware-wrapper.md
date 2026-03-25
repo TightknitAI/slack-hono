@@ -141,8 +141,8 @@ Reuses: `Authorize` type, `singleTeamAuthorize` from slack-edge
 Wraps `SlackApp`, replacing `run()` with a Hono handler:
 - Uses `c.req.raw` as the Request
 - Uses `c.executionCtx` for waitUntil (fallback: `NoopExecutionContext`)
-- Exposes Slack context (`client`, `say`, `respond`, `botToken`, `authorizeResult`) via `c.set('slack', ...)`
 - Listener registration API (`.command()`, `.event()`, etc.) unchanged
+- Slack context accessed via slack-edge handler signatures (not Hono `c.var`)
 
 ### 2.4 OAuth Routes as Hono Sub-App
 
@@ -155,9 +155,8 @@ Reuses: slack-edge's `src/oauth-app.ts`, `src/oauth/`
 ```ts
 type SlackHonoEnv = {
   Variables: {
-    slack: { client: SlackAPIClient; say: Say; respond: Respond; ... }
-    slackRawBody: string
-    slackAuth: AuthorizeResult
+    slackRawBody: string    // set by slackVerify()
+    slackAuth: AuthorizeResult  // set by slackAuthorize()
   }
 }
 ```
@@ -170,20 +169,19 @@ Adapt integration tests to use Hono's test client (`app.request()`) instead of `
 
 ## Verification
 
-1. ✅ `npm run typecheck` — no type errors
-2. ✅ `npm test` — 43 tests green (11 test files)
+1. ✅ `pnpm run typecheck` — no type errors
+2. ✅ `pnpm test` — 50 tests green (12 test files)
 3. ✅ Same behavioral tests green against slack-hono wrapper
 4. ✅ Type-level tests pass (12 expect-type assertions)
-5. ⬜ CI pipeline green on GitHub Actions — needs first commit + push
-6. ⬜ Manual smoke test: deploy Hono + slack-hono to Cloudflare Workers, verify slash command works end-to-end
+5. ✅ CI pipeline green on GitHub Actions
+6. ✅ Manual smoke test: slack-hono-example deployed to Cloudflare Workers, slash commands + OAuth working end-to-end
 
 ---
 
 ## Remaining Work
 
 ### Open Items
-- **Phase 0.4**: Capture real payloads from a Slack test app (current fixtures are synthetic)
-- **CI**: First commit + push to trigger GitHub Actions
+- **Phase 0.4**: Capture real payloads from a Slack test app (current fixtures are synthetic — low priority, tests pass)
 
 ### Completed Items
 - ✅ **Phase 0.1**: README.md with API docs, before/after examples, all listener types
@@ -192,7 +190,7 @@ Adapt integration tests to use Hono's test client (`app.request()`) instead of `
 - ✅ **Phase 1.1**: Request fixture factory (`test/helpers/slack-request-factory.ts`)
 - ✅ **Phase 1.2**: SpyExecutionContext (`test/helpers/spy-execution-context.ts`)
 - ✅ **Phase 1.3**: Payload fixtures for all interaction types (`test/fixtures/index.ts`)
-- ✅ **Phase 1.4**: 31 behavioral tests across 10 test files
+- ✅ **Phase 1.4**: 38 behavioral tests across 12 test files
 - ✅ **Phase 1.5**: 12 type-level tests with `expect-type` (`test/type-tests.test.ts`)
 - ✅ **Phase 2.1**: `slackVerify()` standalone Hono middleware (`src/verify.ts`)
 - ✅ **Phase 2.2**: `slackAuthorize()` standalone Hono middleware (`src/authorize.ts`)
