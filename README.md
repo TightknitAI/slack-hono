@@ -278,6 +278,10 @@ app.all("/slack/*", async (c) => {
 export default app;
 ```
 
+## Acknowledgements
+
+Built on top of [slack-edge](https://github.com/slack-edge/slack-edge) by [@seratch](https://github.com/seratch) — a fantastic Slack app framework for edge runtimes. slack-hono wouldn't exist without it.
+
 ## License
 
 MIT
