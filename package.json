@@ -45,6 +45,7 @@
     "expect-type": "^1.2.0",
     "hono": "^4.7.0",
     "lefthook": "^2.1.4",
+    "slack-web-api-client": "^1.1.11",
     "typescript": "^5.9.0",
     "vitest": "^4.0.0"
   },
