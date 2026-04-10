@@ -1,6 +1,6 @@
 {
   "name": "slack-hono",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Slack app framework as a Hono plugin — powered by slack-edge",
   "type": "module",
   "main": "./dist/index.js",
