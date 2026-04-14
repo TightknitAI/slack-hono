@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="slack-hono logo" width="200" />
+</p>
+
 # slack-hono
 
 [![CI](https://github.com/slack-edge/slack-hono/actions/workflows/ci.yml/badge.svg)](https://github.com/slack-edge/slack-hono/actions/workflows/ci.yml)
