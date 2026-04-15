@@ -51,11 +51,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/slack-edge/slack-hono.git"
+    "url": "git+https://github.com/TightknitAI/slack-hono.git"
   },
-  "homepage": "https://github.com/slack-edge/slack-hono",
+  "homepage": "https://github.com/TightknitAI/slack-hono",
   "bugs": {
-    "url": "https://github.com/slack-edge/slack-hono/issues"
+    "url": "https://github.com/TightknitAI/slack-hono/issues"
   },
   "author": "Tightknit <https://tightknit.ai>",
   "license": "MIT",

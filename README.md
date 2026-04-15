@@ -1,6 +1,10 @@
+<p align="center">
+  <img src="assets/logo.png" alt="slack-hono logo" width="200" />
+</p>
+
 # slack-hono
 
-[![CI](https://github.com/slack-edge/slack-hono/actions/workflows/ci.yml/badge.svg)](https://github.com/slack-edge/slack-hono/actions/workflows/ci.yml)
+[![CI](https://github.com/TightknitAI/slack-hono/actions/workflows/ci.yml/badge.svg)](https://github.com/TightknitAI/slack-hono/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/slack-hono.svg)](https://www.npmjs.com/package/slack-hono)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
