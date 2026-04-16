@@ -26,6 +26,7 @@
     "lint:fix": "biome check --fix .",
     "format": "biome format --write .",
     "prepare": "lefthook install",
+    "release": "pnpm run build:clean && pnpm test && pnpm publish --provenance --access public --no-git-checks",
     "prepublishOnly": "pnpm run build:clean && pnpm test"
   },
   "dependencies": {
@@ -41,6 +42,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
     "@vitest/coverage-v8": "^4.1.4",
     "expect-type": "^1.3.0",
     "hono": "^4.12.14",
