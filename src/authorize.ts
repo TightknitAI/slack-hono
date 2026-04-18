@@ -66,9 +66,8 @@ export const slackAuthorize = (options: SlackAuthorizeOptions) =>
         rawBody,
         headers: c.req.raw.headers,
       });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Authorization failed";
-      return c.text(message, 401);
+    } catch {
+      return c.text("Authorization failed", 401);
     }
 
     c.set("slackAuth", result);

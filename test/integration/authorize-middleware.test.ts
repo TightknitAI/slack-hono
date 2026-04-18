@@ -137,7 +137,7 @@ describe("slackAuthorize middleware", () => {
     const res = await hono.request(req);
     expect(res.status).toBe(401);
     const body = await res.text();
-    expect(body).toContain("Token revoked");
+    expect(body).toBe("Authorization failed");
   });
 
   it("returns 400 on malformed JSON body", async () => {
