@@ -140,6 +140,34 @@ describe("slackAuthorize middleware", () => {
     expect(body).toBe("Authorization failed");
   });
 
+  it("parses as urlencoded when content-type header is missing", async () => {
+    const hono = new Hono<Env>();
+
+    const rawBody = new URLSearchParams(fixtures.slashCommand as Record<string, string>).toString();
+
+    hono.post(
+      "/slack/events",
+      async (c, next) => {
+        c.set("slackRawBody" as never, rawBody as never);
+        await next();
+      },
+      slackAuthorize({ authorize: fixtures.mockAuthorize }),
+      (c) => c.json({ botId: c.var.slackAuth.botId }),
+    );
+
+    // Blob with empty type avoids Fetch's auto content-type on string bodies
+    const req = new Request("http://localhost/slack/events", {
+      method: "POST",
+      body: new Blob([rawBody], { type: "" }),
+    });
+    expect(req.headers.get("content-type")).toBeNull();
+
+    const res = await hono.request(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.botId).toBe(fixtures.BOT_ID);
+  });
+
   it("returns 400 on malformed JSON body", async () => {
     const hono = new Hono<Env>();
 
