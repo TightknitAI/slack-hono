@@ -24,21 +24,25 @@ jobs:
       # creates a release. The full test suite already ran in CI against
       # the same commit before release-please merged it to main.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - uses: ./.github/actions/setup
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - run: pnpm run lint
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - run: pnpm run typecheck
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - run: pnpm run build:clean
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
-      - run: pnpm publish --provenance --access public --no-git-checks
-        if: ${{ steps.release.outputs.release_created }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Trusted Publisher (OIDC) needs npm CLI >= 11.5.1; Node 22 ships with
+      # npm 10.x, and pnpm <11.0.7 does not perform the OIDC exchange. So we
+      # publish with npm from the upgraded CLI instead of `pnpm publish`.
+      - run: npm install -g npm@latest
+        if: ${{ steps.release.outputs.releases_created }}
+
+      - run: npm publish --provenance --access public
+        if: ${{ steps.release.outputs.releases_created }}
