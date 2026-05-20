@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/TightknitAI/slack-hono/actions/workflows/ci.yml/badge.svg)](https://github.com/TightknitAI/slack-hono/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/TightknitAI/slack-hono/branch/main/graph/badge.svg)](https://codecov.io/gh/TightknitAI/slack-hono)
-[![npm version](https://img.shields.io/npm/v/slack-hono.svg)](https://www.npmjs.com/package/slack-hono)
+[![npm version](https://img.shields.io/npm/v/@tightknitai/slack-hono.svg)](https://www.npmjs.com/package/@tightknitai/slack-hono)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Slack app framework as a [Hono](https://hono.dev) plugin — powered by [slack-edge](https://github.com/slack-edge/slack-edge).
@@ -16,14 +16,14 @@ Build Slack apps that run on Cloudflare Workers, Deno, Bun, Vercel Edge, and any
 ## Install
 
 ```bash
-pnpm add slack-hono hono
+pnpm add @tightknitai/slack-hono hono
 ```
 
 ## Quick Start
 
 ```ts
 import { Hono } from "hono";
-import { SlackHonoApp } from "slack-hono";
+import { SlackHonoApp } from "@tightknitai/slack-hono";
 
 const slack = new SlackHonoApp({
   env: {
@@ -77,7 +77,7 @@ export default app;
 
 ```ts
 import { Hono } from "hono";
-import { SlackHonoApp } from "slack-hono";
+import { SlackHonoApp } from "@tightknitai/slack-hono";
 
 const slack = new SlackHonoApp({
   env: {
@@ -151,7 +151,7 @@ slack.afterAuthorize(middleware);
 For multi-workspace apps that need OAuth installation flow:
 
 ```ts
-import { SlackHonoOAuthApp } from "slack-hono";
+import { SlackHonoOAuthApp } from "@tightknitai/slack-hono";
 
 const slack = new SlackHonoOAuthApp({
   env: {
@@ -179,7 +179,7 @@ app.route("/", slack.handler());
 Standalone Hono middleware for Slack request signature verification. Useful when building custom handlers outside of `SlackHonoApp`:
 
 ```ts
-import { slackVerify } from "slack-hono";
+import { slackVerify } from "@tightknitai/slack-hono";
 
 app.post("/webhook", slackVerify(signingSecret), (c) => {
   const rawBody = c.var.slackRawBody;
@@ -192,7 +192,7 @@ app.post("/webhook", slackVerify(signingSecret), (c) => {
 Standalone Hono middleware for Slack authorization. Must be used after `slackVerify()`:
 
 ```ts
-import { slackVerify, slackAuthorize, singleTeamAuthorize } from "slack-hono";
+import { slackVerify, slackAuthorize, singleTeamAuthorize } from "@tightknitai/slack-hono";
 
 app.post(
   "/slack/events",
@@ -208,7 +208,7 @@ app.post(
 ### Type Definitions
 
 ```ts
-import type { SlackHonoEnv, SlackContext } from "slack-hono";
+import type { SlackHonoEnv, SlackContext } from "@tightknitai/slack-hono";
 
 // SlackHonoEnv provides typed Hono variables:
 // c.var.slack       — SlackContext (client, botToken, authorizeResult, etc.)
@@ -222,7 +222,7 @@ import type { SlackHonoEnv, SlackContext } from "slack-hono";
 
 ```ts
 import { Hono } from "hono";
-import { SlackHonoApp } from "slack-hono";
+import { SlackHonoApp } from "@tightknitai/slack-hono";
 
 type Env = { SLACK_SIGNING_SECRET: string; SLACK_BOT_TOKEN: string };
 
@@ -247,12 +247,12 @@ export default app;
 For apps installed across multiple workspaces, use [`slack-cloudflare-workers`](https://github.com/slack-edge/slack-cloudflare-workers) for KV-backed installation and state stores:
 
 ```bash
-pnpm add slack-hono slack-cloudflare-workers hono
+pnpm add @tightknitai/slack-hono slack-cloudflare-workers hono
 ```
 
 ```ts
 import { Hono } from "hono";
-import { SlackHonoOAuthApp } from "slack-hono";
+import { SlackHonoOAuthApp } from "@tightknitai/slack-hono";
 import { KVInstallationStore, KVStateStore } from "slack-cloudflare-workers";
 
 type Env = {
