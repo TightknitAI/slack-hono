@@ -23,7 +23,7 @@ jobs:
       # Everything below runs only when release-please merges its PR and
       # creates a release. The full test suite already ran in CI against
       # the same commit before release-please merged it to main.
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - uses: ./.github/actions/setup
