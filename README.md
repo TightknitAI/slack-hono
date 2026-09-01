@@ -197,10 +197,37 @@ import { slackVerify, slackAuthorize, singleTeamAuthorize } from "@tightknitai/s
 app.post(
   "/slack/events",
   slackVerify(signingSecret),
-  slackAuthorize({ authorize: singleTeamAuthorize }),
+  slackAuthorize({
+    authorize: singleTeamAuthorize,
+    env: { SLACK_BOT_TOKEN: botToken },
+  }),
   (c) => {
     const auth = c.var.slackAuth;
     // auth.botToken, auth.botId, auth.botUserId, etc.
+  }
+);
+```
+
+`env` is forwarded to the authorize function as `req.env`, the same way `SlackApp`
+does internally. Authorize functions that resolve credentials from the
+environment — including the default `singleTeamAuthorize`, which reads
+`SLACK_BOT_TOKEN` — need it to be populated, or authorization fails with `401`.
+
+When `env` is omitted it defaults to the Hono runtime bindings (`c.env`), so on
+Cloudflare Workers and other edge runtimes the secrets are picked up for you:
+
+```ts
+type Env = { Bindings: { SLACK_SIGNING_SECRET: string; SLACK_BOT_TOKEN: string } };
+
+const app = new Hono<Env>();
+
+app.post(
+  "/slack/events",
+  slackVerify(signingSecret),
+  // SLACK_BOT_TOKEN comes from the Worker bindings
+  slackAuthorize({ authorize: singleTeamAuthorize }),
+  (c) => {
+    const auth = c.var.slackAuth;
   }
 );
 ```
