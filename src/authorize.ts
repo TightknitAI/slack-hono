@@ -1,5 +1,5 @@
 import { createMiddleware } from "hono/factory";
-import type { Authorize, AuthorizeResult } from "slack-edge";
+import type { Authorize, AuthorizeResult, SlackAppEnv } from "slack-edge";
 import { builtBaseContext } from "slack-edge";
 import type { SlackHonoEnv } from "./types";
 
@@ -10,8 +10,18 @@ export type SlackAuthorizeEnv = {
   };
 };
 
-export interface SlackAuthorizeOptions {
-  authorize: Authorize;
+export interface SlackAuthorizeOptions<E extends SlackAppEnv = SlackAppEnv> {
+  authorize: Authorize<E>;
+  /**
+   * The app environment handed to the authorize callback as `req.env`, mirroring
+   * what `SlackApp` passes internally. Authorize functions that resolve credentials
+   * from the environment — including the default `singleTeamAuthorize`, which reads
+   * `SLACK_BOT_TOKEN` — need this to be populated.
+   *
+   * Defaults to the Hono runtime bindings (`c.env`), which is where those secrets
+   * live on Cloudflare Workers and other edge runtimes.
+   */
+  env?: E;
 }
 
 /**
@@ -22,7 +32,9 @@ export interface SlackAuthorizeOptions {
  * ```ts
  * app.post('/slack/events',
  *   slackVerify(signingSecret),
- *   slackAuthorize({ authorize: singleTeamAuthorize }),
+ *   // `singleTeamAuthorize` reads SLACK_BOT_TOKEN from the env; on Cloudflare
+ *   // Workers the Hono bindings supply it, so `env` can be omitted.
+ *   slackAuthorize({ authorize: singleTeamAuthorize, env: { SLACK_BOT_TOKEN: botToken } }),
  *   (c) => {
  *     const auth = c.var.slackAuth;
  *     // auth.botToken, auth.botId, etc.
@@ -30,7 +42,7 @@ export interface SlackAuthorizeOptions {
  * )
  * ```
  */
-export const slackAuthorize = (options: SlackAuthorizeOptions) =>
+export const slackAuthorize = <E extends SlackAppEnv = SlackAppEnv>(options: SlackAuthorizeOptions<E>) =>
   createMiddleware<SlackHonoEnv & SlackAuthorizeEnv>(async (c, next) => {
     const rawBody = c.var.slackRawBody;
     if (!rawBody) {
@@ -57,10 +69,14 @@ export const slackAuthorize = (options: SlackAuthorizeOptions) =>
 
     const context = builtBaseContext(body);
 
+    // Fall back to the runtime bindings so env-reading authorize functions
+    // (e.g. singleTeamAuthorize) work without extra wiring on edge runtimes.
+    const env = options.env ?? ((c.env ?? {}) as E);
+
     let result: AuthorizeResult;
     try {
       result = await options.authorize({
-        env: {} as Record<string, string>,
+        env,
         context,
         body,
         rawBody,
