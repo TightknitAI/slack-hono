@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.3](https://github.com/TightknitAI/slack-hono/compare/slack-hono-v0.1.2...slack-hono-v0.1.3) (2026-09-01)
+
+
+### Bug Fixes
+
+* forward the app env to the slackAuthorize callback ([271f1ba](https://github.com/TightknitAI/slack-hono/commit/271f1badb233db749c615d2050b50a9be1af3c07))
+* forward the app env to the slackAuthorize callback ([d18460a](https://github.com/TightknitAI/slack-hono/commit/d18460a137239ed0727f549acc1945580cdc6cf3))
+* **security:** remediate Fencer Nano ID finding ([#48](https://github.com/TightknitAI/slack-hono/issues/48)) ([d93f48e](https://github.com/TightknitAI/slack-hono/commit/d93f48e59c42c7f91b8b291a6abde8d78c76ebfe))
+
 ## [0.1.2](https://github.com/TightknitAI/slack-hono/compare/slack-hono-v0.1.1...slack-hono-v0.1.2) (2026-08-03)
 
 
