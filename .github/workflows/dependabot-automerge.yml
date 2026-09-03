@@ -6,6 +6,19 @@ permissions:
   contents: write
   pull-requests: write
 
+# Only patch updates to direct devDependencies are approved and merged
+# without a human reading the diff. Everything else is left open for review:
+#
+#   - production dependencies (`slack-edge`) ship to every consumer of the
+#     published package, so a compromised upstream release would too
+#   - GitHub Actions run in CI and in the release workflow that holds the npm
+#     publish token; fetch-metadata reports them as `direct:production`
+#   - indirect (transitive) updates and any minor/major bump
+#
+# For grouped PRs fetch-metadata reports the highest-precedence type across
+# the group (production > development > indirect), so a group that mixes in
+# even one production dependency is held as well.
+
 jobs:
   dependabot:
     runs-on: ubuntu-latest
@@ -17,15 +30,19 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Enable auto-merge for patch updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+      - name: Enable auto-merge for devDependency patch updates
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' &&
+          steps.metadata.outputs.dependency-type == 'direct:development'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Approve PR
-        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' &&
+          steps.metadata.outputs.dependency-type == 'direct:development'
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

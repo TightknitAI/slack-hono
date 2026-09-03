@@ -5,8 +5,17 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Production and development updates get separate PRs so the auto-merge
+    # workflow can wave through devDependency patches while production
+    # updates wait for review on their own PR instead of holding up both.
     groups:
-      minor-and-patch:
+      development-minor-and-patch:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+      production-minor-and-patch:
+        dependency-type: production
         update-types:
           - minor
           - patch
