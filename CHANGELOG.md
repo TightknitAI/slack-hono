@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4](https://github.com/TightknitAI/slack-hono/compare/slack-hono-v0.1.3...slack-hono-v0.1.4) (2026-09-03)
+
+
+### Bug Fixes
+
+* **ci:** pin npm publish CLI and release-please-action to exact versions ([43f2a37](https://github.com/TightknitAI/slack-hono/commit/43f2a375077780378b1101813269170687723a61))
+* **ci:** pin npm publish CLI and release-please-action to exact versions ([3694489](https://github.com/TightknitAI/slack-hono/commit/36944896267788a42aa7f9a9308ad542629f0d0f))
+
 ## [0.1.3](https://github.com/TightknitAI/slack-hono/compare/slack-hono-v0.1.2...slack-hono-v0.1.3) (2026-09-01)
 
 
