@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
         with:
           config-file: release-please-config.json
@@ -43,14 +43,22 @@ jobs:
       # cache instead of `npm install -g npm@latest`, which races against
       # the running npm mid-install ("Cannot find module 'promise-retry'").
       # npm 11+ also requires an explicit --tag for prereleases.
+      #
+      # The CLI version is pinned exactly rather than `@latest`: this step
+      # runs with the OIDC publish credential live, so whatever the
+      # registry serves here executes with publish access. Dependabot does
+      # not track this value; bump NPM_CLI_VERSION by hand (keep >= 11.5.1
+      # and within the Node range installed by ./.github/actions/setup).
       - name: Publish to npm
         if: ${{ steps.release.outputs.releases_created == 'true' }}
+        env:
+          NPM_CLI_VERSION: 12.0.2
         run: |
           version=$(node -p "require('./package.json').version")
           if [[ "$version" == *-* ]]; then
             tag="${version#*-}"
             tag="${tag%%.*}"
-            npx -y npm@latest publish --provenance --access public --tag "$tag"
+            npx -y "npm@${NPM_CLI_VERSION}" publish --provenance --access public --tag "$tag"
           else
-            npx -y npm@latest publish --provenance --access public
+            npx -y "npm@${NPM_CLI_VERSION}" publish --provenance --access public
           fi
