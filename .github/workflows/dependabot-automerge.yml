@@ -3,8 +3,7 @@ name: Dependabot auto-merge
 on: pull_request
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 # Only patch updates to direct devDependencies are approved and merged
 # without a human reading the diff. Everything else is left open for review:
@@ -21,6 +20,9 @@ permissions:
 
 jobs:
   dependabot:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
